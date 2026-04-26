@@ -1,0 +1,37 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Prepare pages artifact
+        run: |
+          mkdir _site
+          cp pi.html _site/index.html
+          cp og-preview.png _site/og-preview.png
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+      - uses: actions/deploy-pages@v5
+        id: deployment
