@@ -17,6 +17,11 @@ You can also run the module form directly:
 uv run python -m pi_cli 25
 ```
 
+## Standalone page
+
+There is also a single-file browser version in `pi.html`.
+Open it directly in a browser to calculate pi with the same Machin-style approach used by the Python CLI.
+
 ## Algorithm options
 
 Common ways to calculate or approximate pi include:

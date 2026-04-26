@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pi calculator</title>
+  <style>
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  color-scheme: light dark;
+  --page-text: #1f1f18;
+  --page-background:
+    radial-gradient(circle at top left, #fff4cf 0, transparent 36%),
+    radial-gradient(circle at top right, #dff3ff 0, transparent 30%),
+    linear-gradient(180deg, #f7f2e8 0%, #f3efe5 45%, #ece8dd 100%);
+  --panel-background: rgba(255, 252, 246, 0.88);
+  --panel-border: rgba(71, 54, 21, 0.12);
+  --panel-shadow: rgba(73, 57, 31, 0.12);
+  --eyebrow-background: #f0e6c8;
+  --eyebrow-text: #5f4914;
+  --body-copy: #423c2d;
+  --muted-copy: #534d3d;
+  --label-text: #2b271d;
+  --field-background: #fffdfa;
+  --field-border: #c8bea8;
+  --field-text: #1f1f18;
+  --field-focus: #95752c;
+  --field-focus-shadow: rgba(149, 117, 44, 0.15);
+  --help-text: #655e4c;
+  --button-primary: #ead28c;
+  --button-primary-text: #1e1a13;
+  --button-secondary: #eee5d2;
+  --button-secondary-text: #4c4537;
+  --button-ghost: #f7f2e8;
+  --button-ghost-text: #2d281e;
+  --button-ghost-border: #d6ccb7;
+  --button-hover-shadow: rgba(106, 79, 25, 0.14);
+  --button-focus: rgba(149, 117, 44, 0.38);
+  --status-default: #564821;
+  --status-error: #aa2f23;
+  --status-success: #29623f;
+  --stat-background: #f7f1e4;
+  --stat-border: #e3d9c4;
+  --stat-label: #6d6551;
+  --algorithm-background: #faf6ec;
+  --algorithm-border: #e9dfca;
+  --algorithm-text: #464030;
+  --strong-text: #221d14;
+  --placeholder-text: #8d856f;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page-text: #f4efe3;
+    --page-background:
+      radial-gradient(circle at top left, #59471a 0, transparent 32%),
+      radial-gradient(circle at top right, #16374c 0, transparent 28%),
+      linear-gradient(180deg, #12151a 0%, #171b22 48%, #0d1015 100%);
+    --panel-background: rgba(22, 27, 34, 0.84);
+    --panel-border: rgba(233, 222, 198, 0.12);
+    --panel-shadow: rgba(0, 0, 0, 0.42);
+    --eyebrow-background: rgba(240, 199, 101, 0.14);
+    --eyebrow-text: #f2d98f;
+    --body-copy: #d9d1c1;
+    --muted-copy: #c8c0b0;
+    --label-text: #f4efe3;
+    --field-background: #10141a;
+    --field-border: #4f5764;
+    --field-text: #f4efe3;
+    --field-focus: #f0c765;
+    --field-focus-shadow: rgba(240, 199, 101, 0.22);
+    --help-text: #b6ae9f;
+    --button-primary: #f0c765;
+    --button-primary-text: #1d1b14;
+    --button-secondary: #29313b;
+    --button-secondary-text: #f4efe3;
+    --button-ghost: #1b2129;
+    --button-ghost-text: #f4efe3;
+    --button-ghost-border: #45505f;
+    --button-hover-shadow: rgba(0, 0, 0, 0.35);
+    --button-focus: rgba(240, 199, 101, 0.35);
+    --status-default: #f0c765;
+    --status-error: #ff9180;
+    --status-success: #86d7a4;
+    --stat-background: #171d24;
+    --stat-border: #343d49;
+    --stat-label: #b6ae9f;
+    --algorithm-background: #161c23;
+    --algorithm-border: #303946;
+    --algorithm-text: #d9d1c1;
+    --strong-text: #fff3d4;
+    --placeholder-text: #8791a0;
+  }
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: Helvetica, Arial, sans-serif;
+  background: var(--page-background);
+  color: var(--page-text);
+}
+
+button,
+input,
+textarea {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 16px;
+}
+
+main {
+  width: min(980px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 40px 0 56px;
+}
+
+.hero {
+  display: grid;
+  gap: 24px;
+  align-items: start;
+}
+
+.panel {
+  background: var(--panel-background);
+  border: 1px solid var(--panel-border);
+  border-radius: 28px;
+  box-shadow: 0 22px 60px var(--panel-shadow);
+  backdrop-filter: blur(8px);
+}
+
+.hero-card {
+  padding: 28px;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--eyebrow-background);
+  color: var(--eyebrow-text);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+h1 {
+  max-width: 12ch;
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+}
+
+.intro {
+  max-width: 54ch;
+  margin-top: 18px;
+  font-size: 1.08rem;
+  line-height: 1.6;
+  color: var(--body-copy);
+}
+
+.hero-grid {
+  display: grid;
+  gap: 24px;
+  margin-top: 28px;
+}
+
+.controls,
+.details {
+  padding: 24px;
+}
+
+.section-title {
+  font-size: 1.35rem;
+  margin-bottom: 10px;
+}
+
+.section-copy {
+  color: var(--muted-copy);
+  line-height: 1.55;
+}
+
+form {
+  display: grid;
+  gap: 18px;
+}
+
+.field-group {
+  display: grid;
+  gap: 10px;
+}
+
+label {
+  font-weight: 700;
+  color: var(--label-text);
+}
+
+input[type="number"],
+textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--field-border);
+  border-radius: 18px;
+  background: var(--field-background);
+  color: var(--field-text);
+  transition: border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+}
+
+input[type="number"]::placeholder,
+textarea::placeholder {
+  color: var(--placeholder-text);
+  opacity: 1;
+}
+
+input[type="number"]:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--field-focus);
+  box-shadow: 0 0 0 4px var(--field-focus-shadow);
+}
+
+textarea {
+  min-height: 220px;
+  line-height: 1.45;
+  resize: vertical;
+}
+
+.help-text {
+  color: var(--help-text);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.button-row,
+.preset-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+button {
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  padding: 14px 18px;
+  cursor: pointer;
+  color: var(--button-primary-text);
+  background: var(--button-primary);
+  font-weight: 700;
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px var(--button-hover-shadow);
+}
+
+button:focus-visible {
+  outline: 3px solid var(--button-focus);
+  outline-offset: 3px;
+}
+
+button.secondary {
+  background: var(--button-secondary);
+  color: var(--button-secondary-text);
+}
+
+button.ghost {
+  background: var(--button-ghost);
+  border: 1px solid var(--button-ghost-border);
+  color: var(--button-ghost-text);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  transform: none;
+  opacity: 0.6;
+  box-shadow: none;
+}
+
+.status {
+  min-height: 24px;
+  padding: 4px 0;
+  color: var(--status-default);
+  font-weight: 700;
+}
+
+.status[data-state="error"] {
+  color: var(--status-error);
+}
+
+.status[data-state="success"] {
+  color: var(--status-success);
+}
+
+.stats {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.stat-card {
+  padding: 16px 18px;
+  border-radius: 20px;
+  background: var(--stat-background);
+  border: 1px solid var(--stat-border);
+}
+
+.stat-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  color: var(--stat-label);
+}
+
+.stat-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.algorithm-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 0;
+  list-style: none;
+}
+
+.algorithm-list li {
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--algorithm-background);
+  border: 1px solid var(--algorithm-border);
+  color: var(--algorithm-text);
+  line-height: 1.45;
+}
+
+.algorithm-list strong {
+  color: var(--strong-text);
+}
+
+code {
+  font-family: Helvetica, Arial, sans-serif;
+  font-weight: 700;
+}
+
+@media (min-width: 860px) {
+  .hero-grid {
+    grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+  }
+}
+
+@media (max-width: 640px) {
+  main {
+    width: min(100% - 20px, 980px);
+    padding-top: 20px;
+    padding-bottom: 32px;
+  }
+
+  .hero-card,
+  .controls,
+  .details {
+    padding: 20px;
+    border-radius: 24px;
+  }
+
+  h1 {
+    max-width: none;
+  }
+
+  .button-row,
+  .preset-row {
+    flex-direction: column;
+  }
+
+  button {
+    width: 100%;
+  }
+}
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <div class="panel hero-card">
+        <div class="eyebrow">Single-file version</div>
+        <h1>Calculate pi in your browser</h1>
+        <p class="intro">
+          This page uses the same fixed-point Machin-style formula as the Python CLI,
+          but runs fully in the browser with plain HTML, vanilla JavaScript, and CSS.
+        </p>
+      </div>
+
+      <div class="hero-grid">
+        <section class="panel controls" aria-labelledby="calculator-heading">
+          <h2 class="section-title" id="calculator-heading">Calculator</h2>
+          <p class="section-copy">
+            Choose how many digits you want after the decimal point, then calculate
+            pi right on the page. Larger values take longer, so a worker keeps the UI responsive.
+          </p>
+
+          <form id="pi-form">
+            <div class="field-group">
+              <label for="digits">Decimal digits</label>
+              <input id="digits" name="digits" type="number" min="0" max="100000" step="1" value="250" inputmode="numeric">
+              <p class="help-text">Valid range: 0 to 100,000 digits after the decimal point.</p>
+            </div>
+
+            <div class="field-group">
+              <span class="help-text">Try a preset</span>
+              <div class="preset-row">
+                <button type="button" class="ghost" data-preset="25">25 digits</button>
+                <button type="button" class="ghost" data-preset="250">250 digits</button>
+                <button type="button" class="ghost" data-preset="1000">1,000 digits</button>
+              </div>
+            </div>
+
+            <div class="button-row">
+              <button id="calculate-button" type="submit">Calculate pi</button>
+              <button id="stop-button" type="button" class="secondary" disabled>Stop calculation</button>
+            </div>
+
+            <div id="status" class="status" aria-live="polite"></div>
+
+            <div class="field-group">
+              <label for="output">Pi output</label>
+              <textarea id="output" readonly spellcheck="false" placeholder="Your pi digits will appear here."></textarea>
+            </div>
+          </form>
+        </section>
+
+        <section class="panel details" aria-labelledby="details-heading">
+          <h2 class="section-title" id="details-heading">What this version does</h2>
+          <p class="section-copy">
+            The page keeps the same core math as the CLI: integer scaling, guard digits
+            for rounding, and a Machin-style identity built from arctangent series.
+          </p>
+
+          <div class="stats">
+            <div class="stat-card">
+              <span class="stat-label">Formula</span>
+              <div class="stat-value"><code>π / 4 = 4 arctan(1 / 5) - arctan(1 / 239)</code></div>
+            </div>
+
+            <div class="stat-card">
+              <span class="stat-label">Approach</span>
+              <div class="stat-value">Fixed-point arithmetic with <code>BigInt</code></div>
+            </div>
+
+            <div class="stat-card">
+              <span class="stat-label">Worker status</span>
+              <div class="stat-value" id="worker-status">Idle</div>
+            </div>
+          </div>
+
+          <h2 class="section-title" style="margin-top: 24px;">Other ways to estimate pi</h2>
+          <ul class="algorithm-list">
+            <li><strong>Leibniz series:</strong> easy to teach, but very slow to converge.</li>
+            <li><strong>Nilakantha series:</strong> still simple, with a noticeably better convergence rate.</li>
+            <li><strong>Chudnovsky:</strong> the usual choice when you need huge digit counts.</li>
+            <li><strong>Monte Carlo:</strong> useful for demos and intuition, not exact decimal output.</li>
+          </ul>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+// code in here should not be indented at the first level
+const maxDecimalDigits = 100000;
+const workerStatus = document.querySelector("#worker-status");
+const form = document.querySelector("#pi-form");
+const digitsInput = document.querySelector("#digits");
+const output = document.querySelector("#output");
+const status = document.querySelector("#status");
+const calculateButton = document.querySelector("#calculate-button");
+const stopButton = document.querySelector("#stop-button");
+const presetButtons = [...document.querySelectorAll("[data-preset]")];
+
+let activeWorker = null;
+
+const workerSource = `
+self.onmessage = ({ data }) => {
+  if (data.type === "calculate") {
+    runCalculation(data.digits);
+  }
+};
+
+function runCalculation(decimalDigits) {
+  const maxDigits = 100000;
+  const guardDigits = 25;
+
+  if (!Number.isInteger(decimalDigits) || decimalDigits < 0 || decimalDigits > maxDigits) {
+    self.postMessage({
+      type: "error",
+      message: "Please choose a value between 0 and " + formatWithCommas(maxDigits) + "."
+    });
+    return;
+  }
+
+  const startedAt = performance.now();
+
+  try {
+    const value = calculatePi(decimalDigits, guardDigits);
+    self.postMessage({
+      type: "result",
+      digits: decimalDigits,
+      value,
+      elapsedMs: performance.now() - startedAt
+    });
+  } catch (error) {
+    self.postMessage({
+      type: "error",
+      message: error instanceof Error ? error.message : String(error)
+    });
+  }
+}
+
+function calculatePi(decimalDigits, guardDigits) {
+  const workingDigits = decimalDigits + guardDigits;
+  const scale = 10n ** BigInt(workingDigits);
+  const piScaled = 4n * ((4n * arctanInverse(5, scale)) - arctanInverse(239, scale));
+  const divisor = 10n ** BigInt(guardDigits);
+  const rounded = (piScaled + (divisor / 2n)) / divisor;
+  return formatDecimal(rounded, decimalDigits);
+}
+
+function arctanInverse(inverseX, scale) {
+  const inverseSquared = BigInt(inverseX * inverseX);
+  let term = scale / BigInt(inverseX);
+  let total = term;
+  let denominator = 3n;
+  let subtract = true;
+
+  while (term > 0n) {
+    term /= inverseSquared;
+    if (term === 0n) {
+      break;
+    }
+
+    const current = term / denominator;
+    if (current === 0n) {
+      break;
+    }
+
+    total = subtract ? total - current : total + current;
+    denominator += 2n;
+    subtract = !subtract;
+  }
+
+  return total;
+}
+
+function formatDecimal(value, decimalDigits) {
+  let digits = value.toString();
+
+  if (decimalDigits === 0) {
+    return digits;
+  }
+
+  if (digits.length <= decimalDigits) {
+    digits = digits.padStart(decimalDigits + 1, "0");
+  }
+
+  const splitAt = digits.length - decimalDigits;
+  return digits.slice(0, splitAt) + "." + digits.slice(splitAt);
+}
+
+function formatWithCommas(value) {
+  return String(value).replace(/\\B(?=(\\d{3})+(?!\\d))/g, ",");
+}
+`;
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+  startCalculation();
+});
+
+stopButton.addEventListener("click", () => {
+  stopCalculation("Calculation stopped.");
+});
+
+presetButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    digitsInput.value = button.dataset.preset ?? digitsInput.value;
+    digitsInput.focus();
+    digitsInput.select();
+  });
+});
+
+function startCalculation() {
+  const requestedDigits = Number.parseInt(digitsInput.value, 10);
+
+  if (!Number.isInteger(requestedDigits) || requestedDigits < 0 || requestedDigits > maxDecimalDigits) {
+    setStatus(`Please choose a value between 0 and ${maxDecimalDigits.toLocaleString()}.`, "error");
+    output.value = "";
+    workerStatus.textContent = "Idle";
+    return;
+  }
+
+  if (activeWorker) {
+    activeWorker.terminate();
+  }
+
+  const workerBlob = new Blob([workerSource], { type: "text/javascript" });
+  const workerUrl = URL.createObjectURL(workerBlob);
+  const worker = new Worker(workerUrl);
+  URL.revokeObjectURL(workerUrl);
+
+  activeWorker = worker;
+  output.value = "";
+  setBusy(true);
+  setStatus(`Calculating ${requestedDigits.toLocaleString()} decimal digits...`);
+  workerStatus.textContent = "Working";
+
+  worker.addEventListener("message", ({ data }) => {
+    if (worker !== activeWorker) {
+      return;
+    }
+
+    if (data.type === "result") {
+      output.value = data.value;
+      setStatus(
+        `Computed ${data.digits.toLocaleString()} decimal digits in ${Math.round(data.elapsedMs).toLocaleString()} ms.`,
+        "success"
+      );
+      workerStatus.textContent = "Idle";
+      cleanupWorker();
+      return;
+    }
+
+    if (data.type === "error") {
+      setStatus(data.message, "error");
+      workerStatus.textContent = "Idle";
+      cleanupWorker();
+    }
+  });
+
+  worker.addEventListener("error", (event) => {
+    if (worker !== activeWorker) {
+      return;
+    }
+
+    setStatus(`Calculation failed: ${event.message}`, "error");
+    workerStatus.textContent = "Idle";
+    cleanupWorker();
+  });
+
+  worker.postMessage({ type: "calculate", digits: requestedDigits });
+}
+
+function stopCalculation(message) {
+  if (!activeWorker) {
+    return;
+  }
+
+  activeWorker.terminate();
+  cleanupWorker();
+  workerStatus.textContent = "Idle";
+  setStatus(message, "error");
+}
+
+function cleanupWorker() {
+  activeWorker = null;
+  setBusy(false);
+}
+
+function setBusy(isBusy) {
+  calculateButton.disabled = isBusy;
+  stopButton.disabled = !isBusy;
+  digitsInput.disabled = isBusy;
+
+  presetButtons.forEach((button) => {
+    button.disabled = isBusy;
+  });
+}
+
+function setStatus(message, state = "") {
+  status.textContent = message;
+  status.dataset.state = state;
+}
+  </script>
+</body>
+</html>
