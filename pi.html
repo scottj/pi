@@ -56,8 +56,12 @@
   --status-idle:     #c9a227;
   --stat-bg:         rgba(201, 162, 39, 0.05);
   --algo-bg:         rgba(255, 255, 255, 0.025);
+  --algo-active-bg:  rgba(201, 162, 39, 0.08);
+  --algo-active-border: rgba(201, 162, 39, 0.45);
   --scrollbar-thumb: rgba(201, 162, 39, 0.25);
   --scrollbar-track: rgba(255, 255, 255, 0.04);
+  --demo-badge-bg:   rgba(201, 162, 39, 0.12);
+  --demo-badge-text: #c9a227;
 }
 
 @media (prefers-color-scheme: light) {
@@ -85,8 +89,12 @@
     --status-idle:     #7a5e10;
     --stat-bg:         rgba(140, 105, 18, 0.06);
     --algo-bg:         rgba(0, 0, 0, 0.03);
+    --algo-active-bg:  rgba(140, 105, 18, 0.09);
+    --algo-active-border: rgba(140, 105, 18, 0.45);
     --scrollbar-thumb: rgba(140, 105, 18, 0.22);
     --scrollbar-track: rgba(0, 0, 0, 0.05);
+    --demo-badge-bg:   rgba(140, 105, 18, 0.1);
+    --demo-badge-text: #7a5e10;
   }
 }
 
@@ -202,38 +210,9 @@ main {
   opacity: 0.5;
 }
 
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 20px;
-  padding: 6px 14px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: var(--gold-glow);
-  color: var(--gold-light);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.eyebrow-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--gold);
-  animation: dot-pulse 2.8s ease-in-out infinite;
-}
-
-@keyframes dot-pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: 0.5; transform: scale(0.75); }
-}
+h1, h2, p { margin: 0; }
 
 h1 {
-  margin: 0;
   font-family: 'Playfair Display', serif;
   font-weight: 700;
   font-size: clamp(2.6rem, 5vw, 4.2rem);
@@ -351,7 +330,6 @@ textarea:focus {
   box-shadow: 0 0 0 3px var(--input-focus);
 }
 
-/* hide number spinners */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -428,9 +406,7 @@ button:hover {
   background: var(--gold-light);
 }
 
-button:active {
-  transform: translateY(0);
-}
+button:active { transform: translateY(0); }
 
 button:focus-visible {
   outline: 2px solid var(--gold);
@@ -473,9 +449,7 @@ button:disabled {
   box-shadow: none !important;
 }
 
-button:disabled::after {
-  display: none;
-}
+button:disabled::after { display: none; }
 
 .button-row {
   display: flex;
@@ -533,30 +507,76 @@ button:disabled::after {
   line-height: 1.4;
 }
 
-/* ── Algorithm list ───────────────────────────────── */
+/* ── Algorithm selector ───────────────────────────── */
 
 .algorithm-list {
   display: grid;
-  gap: 10px;
+  gap: 8px;
   margin-top: 16px;
   padding: 0;
   list-style: none;
 }
 
 .algorithm-list li {
-  padding: 12px 16px;
   border-radius: 12px;
   background: var(--algo-bg);
   border: 1px solid var(--border);
+  transition: border-color 150ms ease, background 150ms ease;
+}
+
+.algorithm-list li.is-active {
+  background: var(--algo-active-bg);
+  border-color: var(--algo-active-border);
+}
+
+.algorithm-list li:not(.is-active):hover {
+  border-color: var(--border-hover);
+}
+
+.algorithm-list button {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 16px;
   color: var(--text-muted);
+  font-family: 'Outfit', sans-serif;
   font-size: 0.88rem;
   font-weight: 300;
-  line-height: 1.55;
+  line-height: 1.5;
+  cursor: pointer;
+  transition: color 150ms ease;
+}
+
+.algorithm-list button:hover { background: transparent; box-shadow: none; transform: none; }
+.algorithm-list button:hover::after { display: none; }
+.algorithm-list button:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; }
+
+.algorithm-list li.is-active button {
+  color: var(--text);
 }
 
 .algorithm-list strong {
   font-weight: 600;
   color: var(--gold-light);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.algo-badge {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--demo-badge-bg);
+  color: var(--demo-badge-text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: middle;
 }
 
 code {
@@ -582,23 +602,16 @@ code {
     padding: 24px 0 40px;
   }
 
-  .hero-card {
-    padding: 28px 24px;
-  }
-
-  .panel {
-    padding: 24px 20px;
-  }
+  .hero-card { padding: 28px 24px; }
+  .panel { padding: 24px 20px; }
 
   .preset-row,
   .button-row {
     flex-direction: column;
   }
 
-  button {
-    width: 100%;
-    text-align: center;
-  }
+  button { width: 100%; text-align: center; }
+  .algorithm-list button { width: 100%; }
 }
 
 /* ── Page load reveal ─────────────────────────────── */
@@ -619,10 +632,10 @@ code {
 
   <main>
     <div class="hero-card">
-<h1>Calculate <em>pi</em><br>in your browser</h1>
+      <h1>Calculate <em>pi</em><br>in your browser</h1>
       <p class="intro">
-        Uses fixed-point arithmetic with <code>BigInt</code> and a Machin-style identity
-        to compute as many decimal digits as you need.
+        Choose an algorithm and compute as many decimal digits as you need,
+        right in your browser.
       </p>
     </div>
 
@@ -638,7 +651,7 @@ code {
           <div class="field-group">
             <label for="digits">Decimal digits</label>
             <input id="digits" name="digits" type="number" min="0" max="100000" step="1" value="250" inputmode="numeric" placeholder="250">
-            <p class="help-text">Valid range: 0 – 100,000 digits after the decimal point.</p>
+            <p class="help-text" id="cap-note">Valid range: 0 – 100,000 digits after the decimal point.</p>
           </div>
 
           <div class="field-group">
@@ -667,19 +680,19 @@ code {
 
       <section class="panel" aria-labelledby="details-heading">
         <h2 class="section-title" id="details-heading">How it works</h2>
-        <p class="section-copy">
+        <p class="section-copy" id="algo-description">
           Integer scaling avoids floating-point error. Guard digits handle rounding at the boundary.
         </p>
 
         <div class="stats">
           <div class="stat-card">
             <span class="stat-label">Formula</span>
-            <div class="stat-value"><code>π/4 = 4·arctan(1/5) − arctan(1/239)</code></div>
+            <div class="stat-value" id="stat-formula"><code>π/4 = 4·arctan(1/5) − arctan(1/239)</code></div>
           </div>
 
           <div class="stat-card">
             <span class="stat-label">Arithmetic</span>
-            <div class="stat-value">Fixed-point · <code>BigInt</code></div>
+            <div class="stat-value" id="stat-arithmetic">Fixed-point · <code>BigInt</code></div>
           </div>
 
           <div class="stat-card">
@@ -690,12 +703,23 @@ code {
 
         <div class="section-divider"></div>
 
-        <h2 class="section-title">Other approaches</h2>
-        <ul class="algorithm-list">
-          <li><strong>Leibniz series</strong> — easy to teach; very slow to converge.</li>
-          <li><strong>Nilakantha series</strong> — still simple, noticeably faster convergence.</li>
-          <li><strong>Chudnovsky</strong> — the standard choice for huge digit counts.</li>
-          <li><strong>Monte Carlo</strong> — good for intuition and demos, not exact digits.</li>
+        <h2 class="section-title">Algorithm</h2>
+        <ul class="algorithm-list" id="algorithm-list">
+          <li class="is-active" data-algorithm="machin">
+            <button type="button"><strong>Machin</strong> — fast converging identity using two arctangent terms; practical up to 100,000 digits.</button>
+          </li>
+          <li data-algorithm="chudnovsky">
+            <button type="button"><strong>Chudnovsky</strong> — each term contributes ~14 decimal digits; the standard choice for huge digit counts.</button>
+          </li>
+          <li data-algorithm="nilakantha">
+            <button type="button"><strong>Nilakantha</strong> — simple series with O(1/N³) convergence; slower than Machin but easy to follow.</button>
+          </li>
+          <li data-algorithm="leibniz">
+            <button type="button"><strong>Leibniz <span class="algo-badge">demo</span></strong> — alternating series; converges as O(1/N), so it is very slow to reach even a few digits.</button>
+          </li>
+          <li data-algorithm="montecarlo">
+            <button type="button"><strong>Monte Carlo <span class="algo-badge">demo</span></strong> — estimates π by random sampling; result varies each run and is never exact.</button>
+          </li>
         </ul>
       </section>
     </div>
@@ -703,7 +727,6 @@ code {
 
   <script type="module">
 // code in here should not be indented at the first level
-const maxDecimalDigits = 100000;
 const workerStatus = document.querySelector("#worker-status");
 const form = document.querySelector("#pi-form");
 const digitsInput = document.querySelector("#digits");
@@ -713,32 +736,103 @@ const calculateButton = document.querySelector("#calculate-button");
 const stopButton = document.querySelector("#stop-button");
 const presetButtons = [...document.querySelectorAll("[data-preset]")];
 const bgPi = document.querySelector("#bg-pi");
+const capNote = document.querySelector("#cap-note");
+const algoDescription = document.querySelector("#algo-description");
+const statFormula = document.querySelector("#stat-formula");
+const statArithmetic = document.querySelector("#stat-arithmetic");
+const algorithmListEl = document.querySelector("#algorithm-list");
 
+const ALGORITHMS = [
+  {
+    id: "machin",
+    maxDigits: 100000,
+    description: "Integer scaling avoids floating-point error. Guard digits handle rounding at the boundary.",
+    formula: "π/4 = 4·arctan(1/5) − arctan(1/239)",
+    arithmetic: "Fixed-point · BigInt",
+    capNote: "Valid range: 0 – 100,000 digits after the decimal point.",
+  },
+  {
+    id: "chudnovsky",
+    maxDigits: 100000,
+    description: "Binary splitting evaluates the series in O(M(n) log n) time. Each term of the sum yields about 14.18 correct decimal digits.",
+    formula: "1/π = (12/C³) Σ (-1)ᵏ(6k)!(13591409 + 545140134k) / ((3k)!(k!)³ 640320³ᵏ)",
+    arithmetic: "Fixed-point · BigInt · binary splitting",
+    capNote: "Valid range: 0 – 100,000 digits after the decimal point.",
+  },
+  {
+    id: "nilakantha",
+    maxDigits: 20,
+    description: "A simple alternating series. Each new term adds three consecutive integers in the denominator, giving O(1/N³) convergence — much better than Leibniz, but still too slow for large digit counts.",
+    formula: "π = 3 + Σ 4·(-1)ᵏ / ((2k)(2k+1)(2k+2))",
+    arithmetic: "Floating-point · Number (max ~15 sig. figs.)",
+    capNote: "This algorithm is capped at 20 digits due to O(1/N³) convergence.",
+  },
+  {
+    id: "leibniz",
+    maxDigits: 10,
+    description: "The simplest pi series: alternate adding and subtracting unit fractions with odd denominators. Converges as O(1/N) — extraordinarily slowly. Ten correct digits requires billions of terms.",
+    formula: "π/4 = 1 − 1/3 + 1/5 − 1/7 + 1/9 − ⋯",
+    arithmetic: "Floating-point · Number (max ~15 sig. figs.)",
+    capNote: "Capped at 10 digits. Expect this to take up to a minute.",
+  },
+  {
+    id: "montecarlo",
+    maxDigits: 5,
+    description: "Throws random points into a unit square and counts how many fall inside the quarter-circle. The ratio approximates π/4. Result varies each run and is never exact.",
+    formula: "π ≈ 4 · (points inside quarter-circle) / (total points)",
+    arithmetic: "Probabilistic · Math.random()",
+    capNote: "Result is approximate and varies per run. Shown to 5 decimal places.",
+  },
+];
+
+let activeAlgorithm = ALGORITHMS[0];
 let activeWorker = null;
 
 const workerSource = `
 self.onmessage = ({ data }) => {
   if (data.type === "calculate") {
-    runCalculation(data.digits);
+    runCalculation(data.digits, data.algorithm);
   }
 };
 
-function runCalculation(decimalDigits) {
-  const maxDigits = 100000;
+function runCalculation(decimalDigits, algorithm) {
   const guardDigits = 25;
-
-  if (!Number.isInteger(decimalDigits) || decimalDigits < 0 || decimalDigits > maxDigits) {
-    self.postMessage({
-      type: "error",
-      message: "Please choose a value between 0 and " + formatWithCommas(maxDigits) + "."
-    });
-    return;
-  }
-
   const startedAt = performance.now();
 
   try {
-    const value = calculatePi(decimalDigits, guardDigits);
+    let value;
+
+    if (algorithm === "machin") {
+      if (!Number.isInteger(decimalDigits) || decimalDigits < 0 || decimalDigits > 100000) {
+        throw new Error("Please choose a value between 0 and 100,000.");
+      }
+      value = calculatePiMachin(decimalDigits, guardDigits);
+
+    } else if (algorithm === "chudnovsky") {
+      if (!Number.isInteger(decimalDigits) || decimalDigits < 0 || decimalDigits > 100000) {
+        throw new Error("Please choose a value between 0 and 100,000.");
+      }
+      value = calculatePiChudnovsky(decimalDigits, guardDigits);
+
+    } else if (algorithm === "nilakantha") {
+      if (!Number.isInteger(decimalDigits) || decimalDigits < 0 || decimalDigits > 20) {
+        throw new Error("Nilakantha is capped at 20 digits.");
+      }
+      value = calculatePiNilakantha(decimalDigits);
+
+    } else if (algorithm === "leibniz") {
+      if (!Number.isInteger(decimalDigits) || decimalDigits < 0 || decimalDigits > 10) {
+        throw new Error("Leibniz is capped at 10 digits.");
+      }
+      value = calculatePiLeibniz(decimalDigits);
+
+    } else if (algorithm === "montecarlo") {
+      value = calculatePiMonteCarlo();
+
+    } else {
+      throw new Error("Unknown algorithm: " + algorithm);
+    }
+
     self.postMessage({
       type: "result",
       digits: decimalDigits,
@@ -753,7 +847,9 @@ function runCalculation(decimalDigits) {
   }
 }
 
-function calculatePi(decimalDigits, guardDigits) {
+// ── Machin ──────────────────────────────────────────
+
+function calculatePiMachin(decimalDigits, guardDigits) {
   const workingDigits = decimalDigits + guardDigits;
   const scale = 10n ** BigInt(workingDigits);
   const piScaled = 4n * ((4n * arctanInverse(5, scale)) - arctanInverse(239, scale));
@@ -771,15 +867,9 @@ function arctanInverse(inverseX, scale) {
 
   while (term > 0n) {
     term /= inverseSquared;
-    if (term === 0n) {
-      break;
-    }
-
+    if (term === 0n) break;
     const current = term / denominator;
-    if (current === 0n) {
-      break;
-    }
-
+    if (current === 0n) break;
     total = subtract ? total - current : total + current;
     denominator += 2n;
     subtract = !subtract;
@@ -787,6 +877,114 @@ function arctanInverse(inverseX, scale) {
 
   return total;
 }
+
+// ── Chudnovsky ──────────────────────────────────────
+
+function calculatePiChudnovsky(decimalDigits, guardDigits) {
+  const workingDigits = decimalDigits + guardDigits;
+  const C = 640320n;
+  const C3_OVER_24 = C ** 3n / 24n;
+
+  // Binary splitting: compute P, Q, T for term range [a, b)
+  function split(a, b) {
+    if (b - a === 1n) {
+      const k = a;
+      const Pk = (6n * k - 5n) * (2n * k - 1n) * (6n * k - 1n);
+      const Qk = k ** 3n * C3_OVER_24;
+      const Tk = Pk * (13591409n + 545140134n * k);
+      return { P: Pk, Q: Qk, T: k % 2n === 0n ? Tk : -Tk };
+    }
+    const mid = (a + b) / 2n;
+    const left = split(a, mid);
+    const right = split(mid, b);
+    return {
+      P: left.P * right.P,
+      Q: left.Q * right.Q,
+      T: left.T * right.Q + right.T * left.P,
+    };
+  }
+
+  // Each term adds ~14.18 digits; add a few extra terms for safety
+  const numTerms = BigInt(Math.ceil((workingDigits / 14.18) + 4));
+  const { Q, T } = split(1n, numTerms + 1n);
+
+  // π = (426880 √10005 · Q) / (13591409·Q + T)
+  // Compute √10005 with enough precision using Newton's method in BigInt
+  const scale = 10n ** BigInt(workingDigits + 10);
+  const sqrtScale = isqrt(10005n * scale * scale);
+  const numerator = 426880n * sqrtScale * Q;
+  const denominator = 13591409n * Q + T;
+  const piScaled = numerator / denominator;
+
+  // Trim to working digits then round
+  const trimmed = piScaled / 10n ** 10n;
+  const guardDiv = 10n ** BigInt(guardDigits);
+  const rounded = (trimmed + guardDiv / 2n) / guardDiv;
+  return formatDecimal(rounded, decimalDigits);
+}
+
+function isqrt(n) {
+  if (n < 0n) throw new Error("isqrt of negative");
+  if (n === 0n) return 0n;
+  let x = n;
+  let y = (x + 1n) / 2n;
+  while (y < x) {
+    x = y;
+    y = (x + n / x) / 2n;
+  }
+  return x;
+}
+
+// ── Nilakantha ──────────────────────────────────────
+
+function calculatePiNilakantha(decimalDigits) {
+  const threshold = Math.pow(10, -(decimalDigits + 2));
+  let pi = 3.0;
+  let sign = 1;
+  let k = 1;
+
+  while (true) {
+    const term = 4 / (2 * k * (2 * k + 1) * (2 * k + 2));
+    if (term < threshold) break;
+    pi += sign * term;
+    sign = -sign;
+    k++;
+  }
+
+  return pi.toFixed(decimalDigits);
+}
+
+// ── Leibniz ─────────────────────────────────────────
+
+function calculatePiLeibniz(decimalDigits) {
+  // Each term: (-1)^k / (2k+1); need ~10^(digits+1) terms for digits accuracy
+  // Use Euler acceleration (Leibniz + series acceleration) to reduce iterations
+  // Accelerated form: π/4 = Σ_{n=0}^{N} (-1)^n/(2n+1) + correction
+  // For demonstration we just run the raw series; cap at a feasible count
+  const terms = Math.min(Math.pow(10, decimalDigits + 1), 5e9);
+  let sum = 0;
+  let sign = 1;
+  for (let k = 0; k < terms; k++) {
+    sum += sign / (2 * k + 1);
+    sign = -sign;
+  }
+  return (4 * sum).toFixed(decimalDigits);
+}
+
+// ── Monte Carlo ─────────────────────────────────────
+
+function calculatePiMonteCarlo() {
+  const samples = 10_000_000;
+  let inside = 0;
+  for (let i = 0; i < samples; i++) {
+    const x = Math.random();
+    const y = Math.random();
+    if (x * x + y * y <= 1) inside++;
+  }
+  return (4 * inside / samples).toFixed(5);
+}
+
+// ── Shared helpers ───────────────────────────────────
 
 function formatDecimal(value, decimalDigits) {
   let digits = value.toString();
@@ -808,6 +1006,43 @@ function formatWithCommas(value) {
 }
 `;
 
+// ── Algorithm selection ──────────────────────────────
+
+function selectAlgorithm(id) {
+  const algo = ALGORITHMS.find(a => a.id === id);
+  if (!algo || algo === activeAlgorithm) return;
+
+  activeAlgorithm = algo;
+
+  algoDescription.textContent = algo.description;
+  statFormula.innerHTML = `<code>${algo.formula}</code>`;
+  statArithmetic.innerHTML = algo.arithmetic.replace(/`([^`]+)`/g, "<code>$1</code>");
+  digitsInput.max = algo.maxDigits;
+  capNote.textContent = algo.capNote;
+
+  // Clamp current digit value to new max
+  if (Number(digitsInput.value) > algo.maxDigits) {
+    digitsInput.value = algo.maxDigits;
+  }
+
+  output.value = "";
+  status.textContent = "";
+  status.dataset.state = "";
+
+  document.querySelectorAll("#algorithm-list li").forEach(li => {
+    li.classList.toggle("is-active", li.dataset.algorithm === id);
+  });
+}
+
+algorithmListEl.querySelectorAll("button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const li = btn.closest("li");
+    selectAlgorithm(li.dataset.algorithm);
+  });
+});
+
+// ── Form / presets ───────────────────────────────────
+
 form.addEventListener("submit", (event) => {
   event.preventDefault();
   startCalculation();
@@ -819,17 +1054,21 @@ stopButton.addEventListener("click", () => {
 
 presetButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    digitsInput.value = button.dataset.preset ?? digitsInput.value;
+    const preset = Number(button.dataset.preset);
+    digitsInput.value = Math.min(preset, activeAlgorithm.maxDigits);
     digitsInput.focus();
     digitsInput.select();
   });
 });
 
+// ── Calculation ──────────────────────────────────────
+
 function startCalculation() {
   const requestedDigits = Number.parseInt(digitsInput.value, 10);
+  const max = activeAlgorithm.maxDigits;
 
-  if (!Number.isInteger(requestedDigits) || requestedDigits < 0 || requestedDigits > maxDecimalDigits) {
-    setStatus(`Please choose a value between 0 and ${maxDecimalDigits.toLocaleString()}.`, "error");
+  if (!Number.isInteger(requestedDigits) || requestedDigits < 0 || requestedDigits > max) {
+    setStatus(`Please choose a value between 0 and ${max.toLocaleString()}.`, "error");
     output.value = "";
     workerStatus.textContent = "Idle";
     return;
@@ -852,9 +1091,7 @@ function startCalculation() {
   bgPi.classList.add("is-calculating");
 
   worker.addEventListener("message", ({ data }) => {
-    if (worker !== activeWorker) {
-      return;
-    }
+    if (worker !== activeWorker) return;
 
     if (data.type === "result") {
       output.value = data.value;
@@ -875,23 +1112,17 @@ function startCalculation() {
   });
 
   worker.addEventListener("error", (event) => {
-    if (worker !== activeWorker) {
-      return;
-    }
-
+    if (worker !== activeWorker) return;
     setStatus(`Calculation failed: ${event.message}`, "error");
     workerStatus.textContent = "Idle";
     cleanupWorker();
   });
 
-  worker.postMessage({ type: "calculate", digits: requestedDigits });
+  worker.postMessage({ type: "calculate", digits: requestedDigits, algorithm: activeAlgorithm.id });
 }
 
 function stopCalculation(message) {
-  if (!activeWorker) {
-    return;
-  }
-
+  if (!activeWorker) return;
   activeWorker.terminate();
   cleanupWorker();
   workerStatus.textContent = "Idle";
@@ -908,10 +1139,8 @@ function setBusy(isBusy) {
   calculateButton.disabled = isBusy;
   stopButton.disabled = !isBusy;
   digitsInput.disabled = isBusy;
-
-  presetButtons.forEach((button) => {
-    button.disabled = isBusy;
-  });
+  presetButtons.forEach(b => { b.disabled = isBusy; });
+  algorithmListEl.querySelectorAll("button").forEach(b => { b.disabled = isBusy; });
 }
 
 function setStatus(message, state = "") {
