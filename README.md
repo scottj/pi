@@ -6,19 +6,16 @@ A single-file browser app that calculates pi to a requested number of decimal di
 
 Hosted on GitHub Pages. Open the URL in any browser — no install needed.
 
-## Algorithm
+## Algorithms
 
-Uses a Machin-like formula with fixed-point integer arithmetic and `BigInt`:
+Five algorithms are available, selectable in the UI:
 
-```text
-pi / 4 = 4 * arctan(1 / 5) - arctan(1 / 239)
-```
+| Algorithm | Max digits | Notes |
+|---|---|---|
+| **Machin** | 100,000 | Fast-converging identity using two arctangent terms |
+| **Chudnovsky** | 100,000 | ~14.18 correct digits per term via binary splitting; the standard choice for large counts |
+| **Nilakantha** | 20 | Simple alternating series; O(1/N³) convergence |
+| **Leibniz** | 10 | Demo only — O(1/N) convergence, extremely slow |
+| **Monte Carlo** | 5 | Probabilistic estimate; result varies each run |
 
-The calculation runs in a Web Worker so the UI stays responsive for large digit counts.
-
-## Other approaches
-
-- **Leibniz series**: easy to understand, very slow to converge.
-- **Nilakantha series**: still simple, noticeably better than Leibniz.
-- **Chudnovsky**: best choice for very large digit counts.
-- **Monte Carlo**: useful for simulation demos, not exact decimal output.
+Machin and Chudnovsky use fixed-point arithmetic with `BigInt`. The calculation runs in a Web Worker so the UI stays responsive for large digit counts.
