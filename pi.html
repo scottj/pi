@@ -619,11 +619,10 @@ code {
 
   <main>
     <div class="hero-card">
-      <div class="eyebrow"><span class="eyebrow-dot"></span>Single-file · Vanilla JS</div>
-      <h1>Calculate <em>pi</em><br>in your browser</h1>
+<h1>Calculate <em>pi</em><br>in your browser</h1>
       <p class="intro">
-        Fixed-point arithmetic with <code>BigInt</code> and a Machin-style identity —
-        the same math as the Python CLI, running entirely client-side. No dependencies, no server.
+        Uses fixed-point arithmetic with <code>BigInt</code> and a Machin-style identity
+        to compute as many decimal digits as you need.
       </p>
     </div>
 
@@ -631,8 +630,8 @@ code {
       <section class="panel" aria-labelledby="calculator-heading">
         <h2 class="section-title" id="calculator-heading">Calculator</h2>
         <p class="section-copy">
-          Choose how many digits after the decimal point. A web worker keeps the UI
-          responsive during long calculations.
+          Choose how many digits after the decimal point. Larger values
+          take longer — results appear when the calculation finishes.
         </p>
 
         <form id="pi-form">
