@@ -6,7 +6,7 @@
   <title>Pi Calculator</title>
   <meta name="description" content="Calculate pi in your browser. Supports up to 100,000 decimal digits.">
   <link rel="canonical" href="https://scottj.info/pi/">
-  <meta name="theme-color" content="#0f1623">
+  <meta name="theme-color" content="#070b12">
   <meta property="og:locale" content="en_US">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Pi Calculator">
@@ -24,480 +24,682 @@
   <meta name="twitter:description" content="Calculate pi in your browser. Supports up to 100,000 decimal digits.">
   <meta name="twitter:image" content="https://scottj.info/pi/og-preview.png">
   <meta name="twitter:image:alt" content="A stylized gold pi symbol on a deep navy background.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
 * {
   box-sizing: border-box;
 }
 
 :root {
-  color-scheme: light dark;
-  --page-text: #1f1f18;
-  --page-background:
-    radial-gradient(circle at top left, #fff4cf 0, transparent 36%),
-    radial-gradient(circle at top right, #dff3ff 0, transparent 30%),
-    linear-gradient(180deg, #f7f2e8 0%, #f3efe5 45%, #ece8dd 100%);
-  --panel-background: rgba(255, 252, 246, 0.88);
-  --panel-border: rgba(71, 54, 21, 0.12);
-  --panel-shadow: rgba(73, 57, 31, 0.12);
-  --eyebrow-background: #f0e6c8;
-  --eyebrow-text: #5f4914;
-  --body-copy: #423c2d;
-  --muted-copy: #534d3d;
-  --label-text: #2b271d;
-  --field-background: #fffdfa;
-  --field-border: #c8bea8;
-  --field-text: #1f1f18;
-  --field-focus: #95752c;
-  --field-focus-shadow: rgba(149, 117, 44, 0.15);
-  --help-text: #655e4c;
-  --button-primary: #ead28c;
-  --button-primary-text: #1e1a13;
-  --button-secondary: #eee5d2;
-  --button-secondary-text: #4c4537;
-  --button-ghost: #f7f2e8;
-  --button-ghost-text: #2d281e;
-  --button-ghost-border: #d6ccb7;
-  --button-hover-shadow: rgba(106, 79, 25, 0.14);
-  --button-focus: rgba(149, 117, 44, 0.38);
-  --status-default: #564821;
-  --status-error: #aa2f23;
-  --status-success: #29623f;
-  --stat-background: #f7f1e4;
-  --stat-border: #e3d9c4;
-  --stat-label: #6d6551;
-  --algorithm-background: #faf6ec;
-  --algorithm-border: #e9dfca;
-  --algorithm-text: #464030;
-  --strong-text: #221d14;
-  --placeholder-text: #8d856f;
+  --gold:            #c9a227;
+  --gold-light:      #e8bc4a;
+  --gold-dim:        #8a6e1a;
+  --gold-glow:       rgba(201, 162, 39, 0.22);
+  --gold-glow-strong: rgba(201, 162, 39, 0.45);
+  --bg:              #060a12;
+  --bg-mid:          #0a0f1a;
+  --surface:         rgba(11, 17, 28, 0.82);
+  --surface-raised:  rgba(14, 21, 34, 0.94);
+  --border:          rgba(201, 162, 39, 0.16);
+  --border-hover:    rgba(201, 162, 39, 0.36);
+  --text:            #e8e0cc;
+  --text-muted:      #8a8278;
+  --text-faint:      #454038;
+  --label:           #d4cbb8;
+  --input-bg:        rgba(4, 7, 14, 0.7);
+  --input-border:    rgba(201, 162, 39, 0.2);
+  --input-focus:     rgba(201, 162, 39, 0.55);
+  --success:         #52c47a;
+  --error:           #e07070;
+  --status-idle:     #c9a227;
+  --stat-bg:         rgba(201, 162, 39, 0.05);
+  --algo-bg:         rgba(255, 255, 255, 0.025);
+  --scrollbar-thumb: rgba(201, 162, 39, 0.25);
+  --scrollbar-track: rgba(255, 255, 255, 0.04);
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   :root {
-    --page-text: #f4efe3;
-    --page-background:
-      radial-gradient(circle at top left, #59471a 0, transparent 32%),
-      radial-gradient(circle at top right, #16374c 0, transparent 28%),
-      linear-gradient(180deg, #12151a 0%, #171b22 48%, #0d1015 100%);
-    --panel-background: rgba(22, 27, 34, 0.84);
-    --panel-border: rgba(233, 222, 198, 0.12);
-    --panel-shadow: rgba(0, 0, 0, 0.42);
-    --eyebrow-background: rgba(240, 199, 101, 0.14);
-    --eyebrow-text: #f2d98f;
-    --body-copy: #d9d1c1;
-    --muted-copy: #c8c0b0;
-    --label-text: #f4efe3;
-    --field-background: #10141a;
-    --field-border: #4f5764;
-    --field-text: #f4efe3;
-    --field-focus: #f0c765;
-    --field-focus-shadow: rgba(240, 199, 101, 0.22);
-    --help-text: #b6ae9f;
-    --button-primary: #f0c765;
-    --button-primary-text: #1d1b14;
-    --button-secondary: #29313b;
-    --button-secondary-text: #f4efe3;
-    --button-ghost: #1b2129;
-    --button-ghost-text: #f4efe3;
-    --button-ghost-border: #45505f;
-    --button-hover-shadow: rgba(0, 0, 0, 0.35);
-    --button-focus: rgba(240, 199, 101, 0.35);
-    --status-default: #f0c765;
-    --status-error: #ff9180;
-    --status-success: #86d7a4;
-    --stat-background: #171d24;
-    --stat-border: #343d49;
-    --stat-label: #b6ae9f;
-    --algorithm-background: #161c23;
-    --algorithm-border: #303946;
-    --algorithm-text: #d9d1c1;
-    --strong-text: #fff3d4;
-    --placeholder-text: #8791a0;
+    --gold:            #a07c12;
+    --gold-light:      #c09828;
+    --gold-dim:        #c09828;
+    --gold-glow:       rgba(160, 124, 18, 0.15);
+    --gold-glow-strong: rgba(160, 124, 18, 0.3);
+    --bg:              #f5f0e8;
+    --bg-mid:          #ede7db;
+    --surface:         rgba(255, 252, 244, 0.88);
+    --surface-raised:  rgba(255, 253, 247, 0.97);
+    --border:          rgba(140, 105, 18, 0.18);
+    --border-hover:    rgba(140, 105, 18, 0.38);
+    --text:            #1c1810;
+    --text-muted:      #6b6050;
+    --text-faint:      #c8bfaa;
+    --label:           #2c2418;
+    --input-bg:        rgba(255, 252, 244, 0.9);
+    --input-border:    rgba(140, 105, 18, 0.22);
+    --input-focus:     rgba(140, 105, 18, 0.5);
+    --success:         #227a42;
+    --error:           #b03030;
+    --status-idle:     #7a5e10;
+    --stat-bg:         rgba(140, 105, 18, 0.06);
+    --algo-bg:         rgba(0, 0, 0, 0.03);
+    --scrollbar-thumb: rgba(140, 105, 18, 0.22);
+    --scrollbar-track: rgba(0, 0, 0, 0.05);
   }
 }
 
-html,
-body {
+html, body {
   margin: 0;
   min-height: 100%;
 }
 
 body {
-  font-family: Helvetica, Arial, sans-serif;
-  background: var(--page-background);
-  color: var(--page-text);
+  font-family: 'Outfit', Helvetica, sans-serif;
+  font-weight: 400;
+  background-color: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  position: relative;
 }
 
-button,
-input,
-textarea {
-  font-family: Helvetica, Arial, sans-serif;
-  font-size: 16px;
+/* ── Background ───────────────────────────────────── */
+
+.bg-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
 }
+
+.bg-layer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% -10%, var(--gold-glow) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 40% at 80% 80%, rgba(20, 40, 80, 0.4) 0%, transparent 60%);
+}
+
+.bg-layer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+@media (prefers-color-scheme: light) {
+  .bg-layer::after {
+    background-image:
+      linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
+  }
+}
+
+.bg-pi-mark {
+  position: fixed;
+  top: -10vw;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(280px, 50vw, 640px);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--gold);
+  opacity: 0.032;
+  user-select: none;
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 1.4s ease, text-shadow 1.4s ease;
+  will-change: opacity, text-shadow;
+}
+
+.bg-pi-mark.is-calculating {
+  opacity: 0.072;
+  text-shadow: 0 0 120px var(--gold-glow-strong), 0 0 240px var(--gold-glow);
+  animation: pi-breathe 2.4s ease-in-out infinite;
+}
+
+@keyframes pi-breathe {
+  0%, 100% { opacity: 0.072; }
+  50%       { opacity: 0.1; }
+}
+
+/* ── Layout ───────────────────────────────────────── */
 
 main {
-  width: min(980px, calc(100% - 32px));
+  position: relative;
+  z-index: 1;
+  width: min(1020px, calc(100% - 40px));
   margin: 0 auto;
-  padding: 40px 0 56px;
+  padding: 56px 0 72px;
 }
 
-.hero {
-  display: grid;
-  gap: 24px;
-  align-items: start;
-}
-
-.panel {
-  background: var(--panel-background);
-  border: 1px solid var(--panel-border);
-  border-radius: 28px;
-  box-shadow: 0 22px 60px var(--panel-shadow);
-  backdrop-filter: blur(8px);
-}
+/* ── Hero card ────────────────────────────────────── */
 
 .hero-card {
-  padding: 28px;
+  position: relative;
+  padding: 40px 44px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  overflow: hidden;
+  margin-bottom: 28px;
+}
+
+.hero-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--gold-light) 40%, var(--gold) 60%, transparent 100%);
+  opacity: 0.5;
 }
 
 .eyebrow {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 16px;
-  padding: 8px 12px;
+  margin-bottom: 20px;
+  padding: 6px 14px;
   border-radius: 999px;
-  background: var(--eyebrow-background);
-  color: var(--eyebrow-text);
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  border: 1px solid var(--border);
+  background: var(--gold-glow);
+  color: var(--gold-light);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
-h1,
-h2,
-p {
-  margin: 0;
+.eyebrow-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: dot-pulse 2.8s ease-in-out infinite;
+}
+
+@keyframes dot-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.75); }
 }
 
 h1 {
-  max-width: 12ch;
-  font-size: clamp(2.5rem, 5vw, 4.5rem);
-  line-height: 0.95;
-  letter-spacing: -0.04em;
+  margin: 0;
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: clamp(2.6rem, 5vw, 4.2rem);
+  line-height: 0.96;
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+
+h1 em {
+  font-style: italic;
+  color: var(--gold-light);
 }
 
 .intro {
-  max-width: 54ch;
+  max-width: 58ch;
   margin-top: 18px;
-  font-size: 1.08rem;
-  line-height: 1.6;
-  color: var(--body-copy);
+  font-size: 1rem;
+  font-weight: 300;
+  line-height: 1.65;
+  color: var(--text-muted);
 }
+
+/* ── Two-column grid ──────────────────────────────── */
 
 .hero-grid {
   display: grid;
   gap: 24px;
-  margin-top: 28px;
 }
 
-.controls,
-.details {
-  padding: 24px;
+@media (min-width: 860px) {
+  .hero-grid {
+    grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr);
+    align-items: start;
+  }
+}
+
+/* ── Panels ───────────────────────────────────────── */
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 28px 32px;
+  transition: border-color 300ms ease;
+}
+
+.panel:hover {
+  border-color: var(--border-hover);
 }
 
 .section-title {
-  font-size: 1.35rem;
-  margin-bottom: 10px;
+  margin: 0 0 8px;
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  font-size: 1.25rem;
+  letter-spacing: -0.01em;
+  color: var(--text);
 }
 
 .section-copy {
-  color: var(--muted-copy);
-  line-height: 1.55;
+  margin: 0 0 24px;
+  font-weight: 300;
+  color: var(--text-muted);
+  line-height: 1.6;
+  font-size: 0.93rem;
 }
+
+/* ── Form ─────────────────────────────────────────── */
 
 form {
   display: grid;
-  gap: 18px;
+  gap: 20px;
 }
 
 .field-group {
   display: grid;
-  gap: 10px;
+  gap: 8px;
 }
 
 label {
-  font-weight: 700;
-  color: var(--label-text);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--label);
 }
 
 input[type="number"],
 textarea {
   width: 100%;
-  padding: 14px 16px;
-  border: 1px solid var(--field-border);
-  border-radius: 18px;
-  background: var(--field-background);
-  color: var(--field-text);
-  transition: border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+  padding: 13px 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15px;
+  border: 1px solid var(--input-border);
+  border-radius: 12px;
+  background: var(--input-bg);
+  color: var(--text);
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 input[type="number"]::placeholder,
 textarea::placeholder {
-  color: var(--placeholder-text);
+  color: var(--text-faint);
   opacity: 1;
 }
 
 input[type="number"]:focus,
 textarea:focus {
   outline: none;
-  border-color: var(--field-focus);
-  box-shadow: 0 0 0 4px var(--field-focus-shadow);
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px var(--input-focus);
 }
+
+/* hide number spinners */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+input[type="number"] { -moz-appearance: textfield; }
 
 textarea {
-  min-height: 220px;
-  line-height: 1.45;
+  min-height: 200px;
+  line-height: 1.5;
   resize: vertical;
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }
+
+textarea::-webkit-scrollbar { width: 6px; }
+textarea::-webkit-scrollbar-track { background: var(--scrollbar-track); border-radius: 3px; }
+textarea::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
 
 .help-text {
-  color: var(--help-text);
-  font-size: 0.95rem;
-  line-height: 1.45;
+  font-size: 0.83rem;
+  font-weight: 300;
+  color: var(--text-muted);
+  line-height: 1.5;
 }
 
-.button-row,
+/* ── Preset row ───────────────────────────────────── */
+
 .preset-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 8px;
 }
 
+/* ── Buttons ──────────────────────────────────────── */
+
 button {
+  position: relative;
+  overflow: hidden;
   appearance: none;
   border: 0;
-  border-radius: 999px;
-  padding: 14px 18px;
+  border-radius: 10px;
+  padding: 13px 22px;
   cursor: pointer;
-  color: var(--button-primary-text);
-  background: var(--button-primary);
-  font-weight: 700;
-  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  background: var(--gold);
+  color: #0d0b06;
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease, opacity 120ms ease;
+}
+
+button::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -110%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  transform: skewX(-20deg);
+  transition: left 0ms;
+}
+
+button:hover::after {
+  left: 160%;
+  transition: left 550ms ease;
 }
 
 button:hover {
   transform: translateY(-1px);
-  box-shadow: 0 12px 24px var(--button-hover-shadow);
+  box-shadow: 0 8px 28px var(--gold-glow-strong);
+  background: var(--gold-light);
+}
+
+button:active {
+  transform: translateY(0);
 }
 
 button:focus-visible {
-  outline: 3px solid var(--button-focus);
+  outline: 2px solid var(--gold);
   outline-offset: 3px;
 }
 
 button.secondary {
-  background: var(--button-secondary);
-  color: var(--button-secondary-text);
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+button.secondary:hover {
+  border-color: var(--border-hover);
+  color: var(--text);
+  background: var(--algo-bg);
+  box-shadow: none;
 }
 
 button.ghost {
-  background: var(--button-ghost);
-  border: 1px solid var(--button-ghost-border);
-  color: var(--button-ghost-text);
+  background: transparent;
+  border: 1px solid var(--input-border);
+  color: var(--text-muted);
+  padding: 9px 16px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+button.ghost:hover {
+  border-color: var(--gold);
+  color: var(--gold-light);
+  box-shadow: none;
+  background: var(--gold-glow);
 }
 
 button:disabled {
   cursor: not-allowed;
-  transform: none;
-  opacity: 0.6;
-  box-shadow: none;
+  transform: none !important;
+  opacity: 0.4;
+  box-shadow: none !important;
 }
+
+button:disabled::after {
+  display: none;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+/* ── Status ───────────────────────────────────────── */
 
 .status {
-  min-height: 24px;
-  padding: 4px 0;
-  color: var(--status-default);
-  font-weight: 700;
+  min-height: 22px;
+  padding: 2px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--status-idle);
+  letter-spacing: 0.01em;
+  transition: color 200ms ease;
 }
 
-.status[data-state="error"] {
-  color: var(--status-error);
-}
+.status[data-state="error"]   { color: var(--error); }
+.status[data-state="success"] { color: var(--success); }
 
-.status[data-state="success"] {
-  color: var(--status-success);
-}
+/* ── Stats ────────────────────────────────────────── */
 
 .stats {
   display: grid;
-  gap: 14px;
-  margin-top: 18px;
+  gap: 10px;
+  margin-top: 20px;
 }
 
 .stat-card {
-  padding: 16px 18px;
-  border-radius: 20px;
-  background: var(--stat-background);
-  border: 1px solid var(--stat-border);
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: var(--stat-bg);
+  border: 1px solid var(--border);
 }
 
 .stat-label {
   display: block;
   margin-bottom: 6px;
-  font-size: 0.9rem;
-  color: var(--stat-label);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
 
 .stat-value {
-  font-size: 1.3rem;
-  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.4;
 }
+
+/* ── Algorithm list ───────────────────────────────── */
 
 .algorithm-list {
   display: grid;
-  gap: 12px;
-  margin-top: 18px;
+  gap: 10px;
+  margin-top: 16px;
   padding: 0;
   list-style: none;
 }
 
 .algorithm-list li {
-  padding: 14px 16px;
-  border-radius: 18px;
-  background: var(--algorithm-background);
-  border: 1px solid var(--algorithm-border);
-  color: var(--algorithm-text);
-  line-height: 1.45;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: var(--algo-bg);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  font-weight: 300;
+  line-height: 1.55;
 }
 
 .algorithm-list strong {
-  color: var(--strong-text);
+  font-weight: 600;
+  color: var(--gold-light);
 }
 
 code {
-  font-family: Helvetica, Arial, sans-serif;
-  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  font-weight: 500;
+  color: var(--gold-light);
 }
 
-@media (min-width: 860px) {
-  .hero-grid {
-    grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
-  }
+/* ── Divider ──────────────────────────────────────── */
+
+.section-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 24px 0;
 }
+
+/* ── Responsive ───────────────────────────────────── */
 
 @media (max-width: 640px) {
   main {
-    width: min(100% - 20px, 980px);
-    padding-top: 20px;
-    padding-bottom: 32px;
+    width: calc(100% - 24px);
+    padding: 24px 0 40px;
   }
 
-  .hero-card,
-  .controls,
-  .details {
-    padding: 20px;
-    border-radius: 24px;
+  .hero-card {
+    padding: 28px 24px;
   }
 
-  h1 {
-    max-width: none;
+  .panel {
+    padding: 24px 20px;
   }
 
-  .button-row,
-  .preset-row {
+  .preset-row,
+  .button-row {
     flex-direction: column;
   }
 
   button {
     width: 100%;
+    text-align: center;
   }
 }
+
+/* ── Page load reveal ─────────────────────────────── */
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.hero-card  { animation: fade-up 0.55s ease both; }
+.hero-grid > :first-child { animation: fade-up 0.55s 0.08s ease both; }
+.hero-grid > :last-child  { animation: fade-up 0.55s 0.16s ease both; }
   </style>
 </head>
 <body>
+  <div class="bg-layer" aria-hidden="true"></div>
+  <div class="bg-pi-mark" id="bg-pi" aria-hidden="true">π</div>
+
   <main>
-    <section class="hero">
-      <div class="panel hero-card">
-        <div class="eyebrow">Single-file version</div>
-        <h1>Calculate pi in your browser</h1>
-        <p class="intro">
-          This page uses the same fixed-point Machin-style formula as the Python CLI,
-          but runs fully in the browser with plain HTML, vanilla JavaScript, and CSS.
+    <div class="hero-card">
+      <div class="eyebrow"><span class="eyebrow-dot"></span>Single-file · Vanilla JS</div>
+      <h1>Calculate <em>pi</em><br>in your browser</h1>
+      <p class="intro">
+        Fixed-point arithmetic with <code>BigInt</code> and a Machin-style identity —
+        the same math as the Python CLI, running entirely client-side. No dependencies, no server.
+      </p>
+    </div>
+
+    <div class="hero-grid">
+      <section class="panel" aria-labelledby="calculator-heading">
+        <h2 class="section-title" id="calculator-heading">Calculator</h2>
+        <p class="section-copy">
+          Choose how many digits after the decimal point. A web worker keeps the UI
+          responsive during long calculations.
         </p>
-      </div>
 
-      <div class="hero-grid">
-        <section class="panel controls" aria-labelledby="calculator-heading">
-          <h2 class="section-title" id="calculator-heading">Calculator</h2>
-          <p class="section-copy">
-            Choose how many digits you want after the decimal point, then calculate
-            pi right on the page. Larger values take longer, so a worker keeps the UI responsive.
-          </p>
+        <form id="pi-form">
+          <div class="field-group">
+            <label for="digits">Decimal digits</label>
+            <input id="digits" name="digits" type="number" min="0" max="100000" step="1" value="250" inputmode="numeric" placeholder="250">
+            <p class="help-text">Valid range: 0 – 100,000 digits after the decimal point.</p>
+          </div>
 
-          <form id="pi-form">
-            <div class="field-group">
-              <label for="digits">Decimal digits</label>
-              <input id="digits" name="digits" type="number" min="0" max="100000" step="1" value="250" inputmode="numeric">
-              <p class="help-text">Valid range: 0 to 100,000 digits after the decimal point.</p>
-            </div>
-
-            <div class="field-group">
-              <span class="help-text">Try a preset</span>
-              <div class="preset-row">
-                <button type="button" class="ghost" data-preset="25">25 digits</button>
-                <button type="button" class="ghost" data-preset="250">250 digits</button>
-                <button type="button" class="ghost" data-preset="1000">1,000 digits</button>
-              </div>
-            </div>
-
-            <div class="button-row">
-              <button id="calculate-button" type="submit">Calculate pi</button>
-              <button id="stop-button" type="button" class="secondary" disabled>Stop calculation</button>
-            </div>
-
-            <div id="status" class="status" aria-live="polite"></div>
-
-            <div class="field-group">
-              <label for="output">Pi output</label>
-              <textarea id="output" readonly spellcheck="false" placeholder="Your pi digits will appear here."></textarea>
-            </div>
-          </form>
-        </section>
-
-        <section class="panel details" aria-labelledby="details-heading">
-          <h2 class="section-title" id="details-heading">What this version does</h2>
-          <p class="section-copy">
-            The page keeps the same core math as the CLI: integer scaling, guard digits
-            for rounding, and a Machin-style identity built from arctangent series.
-          </p>
-
-          <div class="stats">
-            <div class="stat-card">
-              <span class="stat-label">Formula</span>
-              <div class="stat-value"><code>π / 4 = 4 arctan(1 / 5) - arctan(1 / 239)</code></div>
-            </div>
-
-            <div class="stat-card">
-              <span class="stat-label">Approach</span>
-              <div class="stat-value">Fixed-point arithmetic with <code>BigInt</code></div>
-            </div>
-
-            <div class="stat-card">
-              <span class="stat-label">Worker status</span>
-              <div class="stat-value" id="worker-status">Idle</div>
+          <div class="field-group">
+            <span class="help-text" style="font-weight: 500; color: var(--text-muted);">Presets</span>
+            <div class="preset-row">
+              <button type="button" class="ghost" data-preset="25">25</button>
+              <button type="button" class="ghost" data-preset="250">250</button>
+              <button type="button" class="ghost" data-preset="1000">1,000</button>
+              <button type="button" class="ghost" data-preset="10000">10,000</button>
             </div>
           </div>
 
-          <h2 class="section-title" style="margin-top: 24px;">Other ways to estimate pi</h2>
-          <ul class="algorithm-list">
-            <li><strong>Leibniz series:</strong> easy to teach, but very slow to converge.</li>
-            <li><strong>Nilakantha series:</strong> still simple, with a noticeably better convergence rate.</li>
-            <li><strong>Chudnovsky:</strong> the usual choice when you need huge digit counts.</li>
-            <li><strong>Monte Carlo:</strong> useful for demos and intuition, not exact decimal output.</li>
-          </ul>
-        </section>
-      </div>
-    </section>
+          <div class="button-row">
+            <button id="calculate-button" type="submit">Calculate π</button>
+            <button id="stop-button" type="button" class="secondary" disabled>Stop</button>
+          </div>
+
+          <div id="status" class="status" aria-live="polite"></div>
+
+          <div class="field-group">
+            <label for="output">Output</label>
+            <textarea id="output" readonly spellcheck="false" placeholder="Your pi digits will appear here…"></textarea>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel" aria-labelledby="details-heading">
+        <h2 class="section-title" id="details-heading">How it works</h2>
+        <p class="section-copy">
+          Integer scaling avoids floating-point error. Guard digits handle rounding at the boundary.
+        </p>
+
+        <div class="stats">
+          <div class="stat-card">
+            <span class="stat-label">Formula</span>
+            <div class="stat-value"><code>π/4 = 4·arctan(1/5) − arctan(1/239)</code></div>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-label">Arithmetic</span>
+            <div class="stat-value">Fixed-point · <code>BigInt</code></div>
+          </div>
+
+          <div class="stat-card">
+            <span class="stat-label">Worker status</span>
+            <div class="stat-value" id="worker-status">Idle</div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <h2 class="section-title">Other approaches</h2>
+        <ul class="algorithm-list">
+          <li><strong>Leibniz series</strong> — easy to teach; very slow to converge.</li>
+          <li><strong>Nilakantha series</strong> — still simple, noticeably faster convergence.</li>
+          <li><strong>Chudnovsky</strong> — the standard choice for huge digit counts.</li>
+          <li><strong>Monte Carlo</strong> — good for intuition and demos, not exact digits.</li>
+        </ul>
+      </section>
+    </div>
   </main>
 
   <script type="module">
@@ -511,6 +713,7 @@ const status = document.querySelector("#status");
 const calculateButton = document.querySelector("#calculate-button");
 const stopButton = document.querySelector("#stop-button");
 const presetButtons = [...document.querySelectorAll("[data-preset]")];
+const bgPi = document.querySelector("#bg-pi");
 
 let activeWorker = null;
 
@@ -645,8 +848,9 @@ function startCalculation() {
   activeWorker = worker;
   output.value = "";
   setBusy(true);
-  setStatus(`Calculating ${requestedDigits.toLocaleString()} decimal digits...`);
+  setStatus(`Calculating ${requestedDigits.toLocaleString()} decimal digits…`);
   workerStatus.textContent = "Working";
+  bgPi.classList.add("is-calculating");
 
   worker.addEventListener("message", ({ data }) => {
     if (worker !== activeWorker) {
@@ -698,6 +902,7 @@ function stopCalculation(message) {
 function cleanupWorker() {
   activeWorker = null;
   setBusy(false);
+  bgPi.classList.remove("is-calculating");
 }
 
 function setBusy(isBusy) {
